@@ -43,16 +43,35 @@ def add_readme(name):
     click.echo("-> README added")
 
 
-def initialize_git():
-    """ Initialize a Git repository """
-    click.echo("Initializing Git repository...")
+def run_commands(commands: list):
+    """Run a subprocess and suppress the output
+
+    Params
+    ------
+    commands : list of str
+        The commands to execute
+    """
     subprocess.run(
-        ["git", "init"],
+        commands,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True,
     )
+
+
+def initialize_git():
+    """ Initialize a Git repository """
+    click.echo("Initializing Git repository...")
+    run_commands(["git", "init"])
     click.echo("-> Git repo initialized")
+
+
+def commit_all_files():
+    """ Commit all local files with the message "First commit" """
+    click.echo("Commiting the 'First commit'")
+    run_commands(["git", "add", "."])
+    run_commands(["git", "commit", "-m", "First commit"])
+    click.echo("-> First commit completed")
 
 
 @click.command()
@@ -82,6 +101,8 @@ def create_project(name, public, desc, project_type):
     add_readme(name)
 
     initialize_git()
+
+    commit_all_files()
 
     if project_type:
         click.echo(f"Type is: {project_type}")
