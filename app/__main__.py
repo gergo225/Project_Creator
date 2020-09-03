@@ -2,6 +2,7 @@
 
 import click
 
+project_types = ["Python", "Flutter"]
 
 @click.command()
 @click.argument("name")
@@ -14,11 +15,12 @@ import click
 @click.option("-d", "--desc", "--description", help="Description of the GitHub repo")
 @click.option(
     "-t",
+    "--project-type",
     "--type",
-    type=click.Choice(["Python", "Flutter"], case_sensitive=False),
+    type=click.Choice(project_types, case_sensitive=False),
     help="The type of the project to create",
 )
-def create_project(name, public, desc, type):
+def create_project(name, public, desc, project_type):
     """ Creates a new project """
     click.echo(f"Creating project: {name}")
     if public:
@@ -27,8 +29,10 @@ def create_project(name, public, desc, type):
         click.echo("Creating PRIVATE repository")
     if desc:
         click.echo(f"Description: {desc}")
-    if type:
-        click.echo(f"Type is: {type}")
+    if project_type:
+        click.echo(f"Type is: {project_type}")
+    else:
+        click.echo("Empty folder, only Git, no setup")
 
 
 
