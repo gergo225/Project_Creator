@@ -4,6 +4,9 @@ import os
 import sys
 import subprocess
 import click
+import github
+
+from app.my_secrets import USERNAME, PERSONAL_TOKEN
 
 project_types = ["Python", "Flutter"]
 
@@ -68,10 +71,36 @@ def initialize_git():
 
 def commit_all_files():
     """ Commit all local files with the message "First commit" """
-    click.echo("Commiting the 'First commit'")
+    click.echo("Commiting the 'First commit'...")
     run_commands(["git", "add", "."])
     run_commands(["git", "commit", "-m", "First commit"])
     click.echo("-> First commit completed")
+
+
+def create_github_repo(name, description, private):
+    """Creates a new GitHub repository with the project name and description
+
+    Params
+    ------
+    name : str
+        The name of the project
+    description : str, optional
+        The description of the project
+    private : bool, optional
+        Whether the repo should be private or not
+    """
+    click.echo("Creating GitHub repository...")
+
+    g = github.Github(login_or_token=USERNAME, password=PERSONAL_TOKEN)
+    user = g.get_user()
+
+    if not description:
+        description = github.GithubObject.NotSet
+    if not private:
+        private = github.GithubObject.NotSet
+
+    user.create_repo(name, description=description, private=private)
+    click.echo("-> GitHub repository created")
 
 
 @click.command()
@@ -103,6 +132,8 @@ def create_project(name, public, desc, project_type):
     initialize_git()
 
     commit_all_files()
+
+    create_github_repo(name=name, description=desc, private=not public)
 
     if project_type:
         click.echo(f"Type is: {project_type}")
