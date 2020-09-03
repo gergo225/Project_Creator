@@ -2,6 +2,7 @@
 
 import os
 import sys
+import subprocess
 import click
 
 project_types = ["Python", "Flutter"]
@@ -42,6 +43,18 @@ def add_readme(name):
     click.echo("-> README added")
 
 
+def initialize_git():
+    """ Initialize a Git repository """
+    click.echo("Initializing Git repository...")
+    subprocess.run(
+        ["git", "init"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+    )
+    click.echo("-> Git repo initialized")
+
+
 @click.command()
 @click.argument("name")
 @click.option(
@@ -67,6 +80,8 @@ def create_project(name, public, desc, project_type):
     os.chdir(project_path)
 
     add_readme(name)
+
+    initialize_git()
 
     if project_type:
         click.echo(f"Type is: {project_type}")
