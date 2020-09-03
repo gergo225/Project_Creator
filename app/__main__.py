@@ -27,6 +27,21 @@ def create_folder(name):
     click.echo("-> Folder created")
 
 
+def add_readme(name):
+    """Add a README.md file to the project
+
+    Params
+    ------
+    name : str
+        The name of the project to add the README to
+    """
+    click.echo("Adding README.md to folder...")
+    with open("README.md", "w") as readme:
+        readme.write(f"# {name.title()}\n")
+        readme.write("This is the first version of the README")
+    click.echo("-> README added")
+
+
 @click.command()
 @click.argument("name")
 @click.option(
@@ -47,6 +62,11 @@ def create_project(name, public, desc, project_type):
     """ Creates a new project """
     click.echo(f"Creating project: {name}")
     create_folder(name)
+
+    project_path = os.path.join(os.getcwd(), name)
+    os.chdir(project_path)
+
+    add_readme(name)
 
     if project_type:
         click.echo(f"Type is: {project_type}")
