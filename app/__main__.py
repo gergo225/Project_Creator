@@ -89,7 +89,10 @@ def create_github_repo(name, description, private):
     private : bool, optional
         Whether the repo should be private or not
     """
-    click.echo("Creating GitHub repository...")
+    public_or_private = "public"
+    if private:
+        public_or_private = "private"
+    click.echo(f"Creating {public_or_private} GitHub repository...")
 
     g = github.Github(login_or_token=USERNAME, password=PERSONAL_TOKEN)
     user = g.get_user()
@@ -101,6 +104,26 @@ def create_github_repo(name, description, private):
 
     user.create_repo(name, description=description, private=private)
     click.echo("-> GitHub repository created")
+
+
+def add_remote_branch_and_push(name):
+    """ Adds a remote to the local Git, creates a master branch and
+    pushes all files
+
+    Params
+    ------
+    name : str
+        The name of the project, based on which we can
+        generate the remote's address
+    """
+    name = name.replace(" ", "-")
+    remote = f"https://github.com/{USERNAME}/{name}.git"
+    run_commands(["git", "remote", "add", "origin", remote])
+
+    run_commands(["git", "branch", "-M", "master"])
+
+    run_commands(["git", "push", "-u", "origin", "master"])
+    click.echo("-> Files pushed to GitHub")
 
 
 @click.command()
@@ -135,18 +158,15 @@ def create_project(name, public, desc, project_type):
 
     create_github_repo(name=name, description=desc, private=not public)
 
+    add_remote_branch_and_push(name=name)
+
+    click.echo("-- Project successfully created! --")
+
     if project_type:
         click.echo(f"Type is: {project_type}")
     else:
         click.echo("Empty folder, only Git, no setup")
 
-    if public:
-        click.echo("Creating PUBLIC repository")
-    else:
-        click.echo("Creating PRIVATE repository")
-    if desc:
-        click.echo(f"Description: {desc}")
-
 
 if __name__ == "__main__":
-    create_project()
+    create_project() # pylint: disable=no-value-for-parameter
