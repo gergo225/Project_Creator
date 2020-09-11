@@ -8,7 +8,18 @@ import github
 
 from app.my_secrets import USERNAME, PERSONAL_TOKEN
 
-project_types = ["Python", "Flutter"]
+
+class ProjectType:
+    """The type of the project
+
+    This is the language the project is written in.
+    """
+
+    PYTHON = "Python"
+    FLUTTER = "Flutter"
+
+
+project_types = [ProjectType.PYTHON, ProjectType.FLUTTER]
 
 
 def create_folder(name):
@@ -20,7 +31,7 @@ def create_folder(name):
         Name of the project and folder to create
     """
     click.echo("Creating project folder...")
-    path = os.path.join(os.getcwd(), name)
+    path = os.path.join("C:\\Users\\user\\Desktop", name)  # TODO: change later
 
     try:
         os.mkdir(path)
@@ -69,6 +80,65 @@ def initialize_git():
     click.echo("-> Git repo initialized")
 
 
+def create_python_project():
+    """ Set up a Python project """
+    # TODO: Manage to run commands without error
+    # run_commands(["python", "venv", "venv"])
+    # run_commands(["venv/Scripts/activate.bat"])
+    # run_commands(["pip", "install", "pylint"])
+    # run_commands(["pip", "install", "black"])
+
+    os.mkdir(os.path.join(os.getcwd(), ".vscode"))
+    file_path = os.path.join(os.getcwd(), ".vscode", "settings.json")
+    with open(file_path, "w") as settings:
+        settings.writelines(
+            "{\n"
+            '\t"python.pythonPath": "venv\\\Scripts\\\python.exe",\n'  # pylint: disable=anomalous-backslash-in-string
+            '\t"python.linting.pylintEnabled": true,\n'
+            '\t"python.linting.enabled": true,\n'
+            '\t"python.formatting.provider": "black",\n'
+            '\t"python.terminal.activateEnvInCurrentTerminal": true\n'
+            "}\n"
+        )
+
+    with open(".gitignore", "w") as gitignore:
+        gitignore.write("__pycache__/\n")
+        gitignore.write("venv/\n")
+
+    app_folder = os.path.join(os.getcwd(), "app")
+    os.mkdir(app_folder)
+
+    main_py_file = os.path.join(app_folder, "__main__.py")
+    with open(main_py_file, "w"):
+        pass
+
+    init_py_file = os.path.join(app_folder, "__init__.py")
+    with open(init_py_file, "w"):
+        pass
+
+    # TODO: Manage to run command without error
+    # run_commands(["pip", "freeze", ">", "requirements.txt"])
+
+
+def create_flutter_project():
+    """ Set up a Flutter project """
+    # TODO: Manage to access variables outside the virtual environment
+    # run_commands(["flutter", "create", "."])
+    click.echo("Sorry, Flutter projects can't be created just yet... :(")
+
+
+def create_type_of_project(project_type: str):
+    """ Sets up a project for the appropriate type"""
+    if project_type == ProjectType.PYTHON:
+        click.echo("Setting up a Python project...")
+        create_python_project()
+        click.echo("-> Python project set up")
+    elif project_type == ProjectType.FLUTTER:
+        click.echo("Setting up a Flutter project...")
+        create_flutter_project()
+        click.echo("-> Flutter project set up")
+
+
 def commit_all_files():
     """ Commit all local files with the message "First commit" """
     click.echo("Commiting the 'First commit'...")
@@ -107,7 +177,7 @@ def create_github_repo(name, description, private):
 
 
 def add_remote_branch_and_push(name):
-    """ Adds a remote to the local Git, creates a master branch and
+    """Adds a remote to the local Git, creates a master branch and
     pushes all files
 
     Params
@@ -147,12 +217,14 @@ def create_project(name, public, desc, project_type):
     click.echo(f"Creating project: {name}")
     create_folder(name)
 
-    project_path = os.path.join(os.getcwd(), name)
+    project_path = os.path.join("C:\\Users\\user\\Desktop", name)  # TODO: change later
     os.chdir(project_path)
 
     add_readme(name)
 
     initialize_git()
+
+    create_type_of_project(project_type)
 
     commit_all_files()
 
@@ -162,11 +234,6 @@ def create_project(name, public, desc, project_type):
 
     click.echo("-- Project successfully created! --")
 
-    if project_type:
-        click.echo(f"Type is: {project_type}")
-    else:
-        click.echo("Empty folder, only Git, no setup")
-
 
 if __name__ == "__main__":
-    create_project() # pylint: disable=no-value-for-parameter
+    create_project()  # pylint: disable=no-value-for-parameter
