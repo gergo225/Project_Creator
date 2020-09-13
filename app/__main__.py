@@ -237,4 +237,4 @@ def create_project(name, public, desc, project_type):
 
 
 if __name__ == "__main__":
-    create_project()  # pylint: disable=no-value-for-parameter
+    create_project(prog_name="create")  # pylint: disable=no-value-for-parameter, unexpected-keyword-arg
