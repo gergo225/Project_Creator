@@ -57,7 +57,7 @@ def add_readme(name):
     click.echo("-> README added")
 
 
-def run_commands(commands: list):
+def run_commands(commands: list, shell=False):
     """Run a subprocess and suppress the output
 
     Params
@@ -70,6 +70,7 @@ def run_commands(commands: list):
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True,
+        shell=shell,
     )
 
 
@@ -124,9 +125,7 @@ def create_python_project():
 
 def create_flutter_project():
     """ Set up a Flutter project """
-    # TODO: Manage to access variables outside the virtual environment
-    # run_commands(["flutter", "create", "."])
-    click.echo("Sorry, Flutter projects can't be created just yet... :(")
+    run_commands(["flutter", "create", "."], shell=True)
 
 
 def create_type_of_project(project_type: str):
