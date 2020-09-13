@@ -82,11 +82,12 @@ def initialize_git():
 
 def create_python_project():
     """ Set up a Python project """
-    # TODO: Manage to run commands without error
-    # run_commands(["python", "venv", "venv"])
-    # run_commands(["venv/Scripts/activate.bat"])
-    # run_commands(["pip", "install", "pylint"])
-    # run_commands(["pip", "install", "black"])
+    global_python = "C:\\Python38\\python.exe" # change according to your Python location
+    run_commands([global_python, "-m", "venv", "venv"])
+
+    # venv_python = os.path.join(os.getcwd(), "venv", "Scripts", "python.exe")
+    # run_commands([venv_python, "-m", "pip", "install", "pylint"])
+    # run_commands([venv_python, "-m", "pip", "install", "black"])
 
     os.mkdir(os.path.join(os.getcwd(), ".vscode"))
     file_path = os.path.join(os.getcwd(), ".vscode", "settings.json")
@@ -116,8 +117,9 @@ def create_python_project():
     with open(init_py_file, "w"):
         pass
 
-    # TODO: Manage to run command without error
-    # run_commands(["pip", "freeze", ">", "requirements.txt"])
+    # run_commands(
+    #     [venv_python, "-", "pip", "freeze", ">", "requirements.txt"], shell=True
+    # )
 
 
 def create_flutter_project():
@@ -164,8 +166,8 @@ def create_github_repo(name, description, private):
         public_or_private = "private"
     click.echo(f"Creating {public_or_private} GitHub repository...")
 
-    g = github.Github(login_or_token=USERNAME, password=PERSONAL_TOKEN)
-    user = g.get_user()
+    github_client = github.Github(login_or_token=USERNAME, password=PERSONAL_TOKEN)
+    user = github_client.get_user()
 
     if not description:
         description = github.GithubObject.NotSet
