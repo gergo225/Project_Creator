@@ -83,8 +83,9 @@ def initialize_git():
 
 def create_python_project():
     """ Set up a Python project """
-    global_python = "C:\\Python38\\python.exe" # change according to your Python location
-    run_commands([global_python, "-m", "venv", "venv"])
+    # Ran into trouble when created venv automatically, so I removed it
+    # global_python = "C:\\Python38\\python.exe" # change according to your Python location
+    # run_commands([global_python, "-m", "venv", "venv"])
 
     # venv_python = os.path.join(os.getcwd(), "venv", "Scripts", "python.exe")
     # run_commands([venv_python, "-m", "pip", "install", "pylint"])
